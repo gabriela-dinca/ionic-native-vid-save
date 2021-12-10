@@ -1,0 +1,7 @@
+{
+  "name": "vidsave",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

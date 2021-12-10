@@ -1,0 +1,6 @@
+{
+  "appId": "de.vidave.test",
+  "appName": "vidsave",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

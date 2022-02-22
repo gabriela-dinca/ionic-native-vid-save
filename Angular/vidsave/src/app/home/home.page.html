@@ -13,5 +13,14 @@
     Download from Url
   </ion-button>
 
+  <div class="videoplayer">
+    videogular
+    <vg-player *ngIf="showVideo">
+      <video class="videoplayer" [vgMedia]="media" #media id="singleVideo" preload="auto" controls crossorigin>
+        <source [src]="urlVideo" type="video/mp4">
+      </video>
+    </vg-player>
+  </div>
+
   <div id="vplayer" slot="fixed"></div>
 </ion-content>

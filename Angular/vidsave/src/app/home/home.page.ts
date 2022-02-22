@@ -4,6 +4,7 @@ import {HttpClient, HttpEventType} from '@angular/common/http';
 import {Directory, Filesystem} from '@capacitor/filesystem';
 import {Capacitor} from '@capacitor/core';
 import {CapacitorVideoPlayer} from 'capacitor-video-player';
+import {VgApiService} from '@videogular/ngx-videogular/core';
 
 export const FILE_KEY = 'files';
 
@@ -13,8 +14,11 @@ export const FILE_KEY = 'files';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  api: VgApiService;
+  urlVideo='';
+  showVideo = false;
+
   myFiles = [];
-  // https://file-examples-com
   videoUrl = 'https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4';
 
   constructor( private http: HttpClient) {
@@ -24,6 +28,10 @@ export class HomePage {
   async loadFiles(){
     const videoList = await Storage.get({ key: FILE_KEY });
     this.myFiles = JSON.parse(videoList.value) || [] ;
+  }
+
+  onPlayerReady(api: VgApiService){
+    this.api = api;
   }
 
   downloadFile() {
@@ -40,25 +48,30 @@ export class HomePage {
           directory: Directory.Data
         });
 
-        const fileReadingTest = await Filesystem.readFile({
-          path: savedFile.uri
-        });
+        // const fileReadingTest = await Filesystem.readFile({
+        //   path: savedFile.uri
+        // });
+        //
+        // this.myFiles.unshift(savedFile.uri);
 
-        this.myFiles.unshift(savedFile.uri);
+        // await Storage.set({
+        //   key: FILE_KEY,
+        //   value: JSON.stringify(this.myFiles)
+        // });
 
-        await Storage.set({
-          key: FILE_KEY,
-          value: JSON.stringify(this.myFiles)
-        });
+        // await CapacitorVideoPlayer.initPlayer({
+        //   mode: 'fullscreen',
+        //   url: savedFile.uri,
+        //   playerId: 'vplayer',
+        //   componentTag: 'home'
+        // }).then(() => {
+        //
+        // }, (err) => alert(JSON.stringify(err)));
 
-        await CapacitorVideoPlayer.initPlayer({
-          mode: 'fullscreen',
-          url: savedFile.uri,
-          playerId: 'vplayer',
-          componentTag: 'home'
-        }).then(() => {
 
-        }, (err) => alert(JSON.stringify(err)));
+        console.log('converted', Capacitor.convertFileSrc(savedFile.uri));
+        this.urlVideo =  Capacitor.convertFileSrc(savedFile.uri);
+        this.showVideo = true;
 
       }
     });
@@ -69,7 +82,7 @@ export class HomePage {
       const fileReader = new FileReader();
       fileReader.onerror = () => reject(fileReader.error);
       fileReader.onloadend = () => {
-        console.log({fileReaderRes: fileReader.result});
+        //console.log({fileReaderRes: fileReader.result});
         resolve(fileReader.result as string);
       };
       fileReader.readAsDataURL(blob);
